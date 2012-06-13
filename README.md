@@ -4,7 +4,7 @@ network-builder
 Small java tool to generate GML and XGMML networks from several sources.
 
 org.tno.networks.StringToNetwork
-================================
+--------------------------------
 
 Convert flatfiles from [STRING](http://string-db.org/) or [STITCH](http://stitch.embl.de/).
 
