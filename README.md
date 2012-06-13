@@ -14,4 +14,9 @@ Requires the following data files:
  * Ensembl gene to protein identifier mappings as text file. These can be exported using BioMART. Files for ensembl 60-64 can be found in the data directory. You can specify multiple files to allow conversion of deprecated protein identifiers still used in STRING / STITCH
 
 An example of how to run the script, this command extracts all non-textmining interactions with a score >400 for mouse and writes it to both GML and XGMML files:
-`java -cp build-network.jar org.tno.networks.StringToNetwork --idm idmapper-pgdb:~/data/bridgedb/Mm_Derby_20110603.bridge --ds L --ens data/string-stitch/mart_export_64.txt data/string-stitch/mart_export_63.txt data/string-stitch/mart_export_62.txt data/string-stitch/mart_export_61.txt data/string-stitch/mart_export_60.txt --species "Mus musculus" --excludeSources NLP --in ~/data/string/protein.actions.detailed.v9.0.txt --out string.9.mouse.400noNLP`
+  
+  java -cp build-network.jar org.tno.networks.StringToNetwork --idm idmapper-pgdb:~/data/bridgedb/Mm_Derby_20110603.bridge
+  --ds L --ens data/string-stitch/mart_export_64.txt data/string-stitch/mart_export_63.txt 
+  data/string-stitch/mart_export_62.txt data/string-stitch/mart_export_61.txt data/string-stitch/mart_export_60.txt 
+  --species "Mus musculus" --excludeSources NLP --in ~/data/string/protein.actions.detailed.v9.0.txt 
+  --out string.9.mouse.400noNLP
