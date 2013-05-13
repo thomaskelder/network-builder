@@ -20,3 +20,13 @@ An example of how to run the script, this command extracts all non-textmining in
   data/string-stitch/mart_export_62.txt data/string-stitch/mart_export_61.txt data/string-stitch/mart_export_60.txt 
   --species "Mus musculus" --excludeSources NLP --in ~/data/string/protein.actions.detailed.v9.0.txt 
   --out string.9.mouse.400noNLP
+  
+org.tno.networks.PathwaysToNetwork
+--------------------------------
+
+Convert GPML files ([WikiPathways](http://www.wikipathways.org), converted KEGG) to networks.
+
+org.tno.networks.TFeToNetwork
+--------------------------------
+
+Create a network with transcription factor targets from [TFe](http://burgundy.cmmt.ubc.ca/tfe/).
