@@ -42,11 +42,12 @@ public class Neo4jWriter {
 		}
 		
 		registerShutdownHook(instance);
-
+		
 		Index<Node> idIndex = instance.index().forNodes("id");
 		Index<Node> propIndex = instance.index().forNodes("property");
 	
 		Map<String, Node> neonodes = new HashMap<String, Node>();
+		
 		
 		
 		for(Graph.Node n : graph.getNodes()){

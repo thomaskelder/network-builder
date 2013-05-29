@@ -102,7 +102,7 @@ public class StringToNetwork {
 		//Read the STITCH interactions
 		BufferedReader in = new BufferedReader(new FileReader(inFile));
 		String line = in.readLine(); //Skip header
-		int srcNull = 0;
+		//int srcNull = 0;
 		
 		
 		while((line = in.readLine()) != null) {
@@ -283,6 +283,7 @@ public class StringToNetwork {
 		
 		if(location.startsWith("http")){
 			remote = true;
+			location = location.replace("http:/", "http://");
 		}
 		Neo4jWriter.write(g, location, remote);
 	}
