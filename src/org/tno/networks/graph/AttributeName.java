@@ -8,6 +8,8 @@ public enum AttributeName {
 	PMID,
 	Source,
 	Label,
+	//STRING STITCH
+	Type,
 	
 	//GPML
 	SourcePathway,

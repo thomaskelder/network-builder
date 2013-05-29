@@ -31,6 +31,7 @@ import org.tno.networks.args.DIDMapper;
 import org.tno.networks.graph.AttributeName;
 import org.tno.networks.graph.GmlWriter;
 import org.tno.networks.graph.Graph;
+import org.tno.networks.graph.Neo4jWriter;
 import org.tno.networks.graph.Graph.Edge;
 import org.tno.networks.graph.Graph.Node;
 import org.tno.networks.graph.XGMMLWriter;
@@ -102,6 +103,8 @@ public class StringToNetwork {
 		BufferedReader in = new BufferedReader(new FileReader(inFile));
 		String line = in.readLine(); //Skip header
 		int srcNull = 0;
+		
+		
 		while((line = in.readLine()) != null) {
 			String[] cols = line.split("\t", 8);
 			String a = cols[0];
@@ -168,13 +171,13 @@ public class StringToNetwork {
 			DIDMapper didm = new DIDMapper(pargs);
 			
 			Organism species = Organism.fromLatinName(pargs.getSpecies());
-
+			
 			//Create ensembl protein -> gene mappings
 			Map<String, String> protein2gene = new HashMap<String, String>();
 			for(File f : pargs.getEns()) protein2gene.putAll(readEnsemblMappings(f));
 			
 			StringToNetwork importer = new StringToNetwork(species, didm.getIDMapper(), protein2gene);
-			
+				
 			if(pargs.getExcludeSources() != null) {
 				importer.setExcludeSources(pargs.getExcludeSources());
 				log.info("Excluding sources: " + pargs.getExcludeSources());
@@ -189,8 +192,12 @@ public class StringToNetwork {
 			} else if(pargs.getOut().getName().endsWith(".gml")) {
 				writeXgmml("" + pargs.getOut(), graph);
 			} else {
-				writeGml(pargs.getOut() + ".gml", graph);
-				writeXgmml(pargs.getOut() + ".xgmml", graph);
+				if(pargs.getNeo4j()){
+					writeNeo4j("" + pargs.getOut(), graph);
+				} else {
+					writeGml(pargs.getOut() + ".gml", graph);
+					writeXgmml(pargs.getOut() + ".xgmml", graph);
+				}
 			}
 		} catch(Exception e) {
 			log.log(Level.SEVERE, "Fatal error", e);
@@ -268,6 +275,18 @@ public class StringToNetwork {
 		out.close();
 	}
 	
+	private static void writeNeo4j(String f, Graph g) {
+		
+		String location = f;
+		
+		boolean remote = false;
+		
+		if(location.startsWith("http")){
+			remote = true;
+		}
+		Neo4jWriter.write(g, location, remote);
+	}
+	
 	private interface Args extends AIDMapper, AHelp {
 		@Option(description = "The path to the stitch 'actions.detailed' file.")
 		File getIn();
@@ -286,5 +305,8 @@ public class StringToNetwork {
 		
 		@Option(description = "Sources to exclude.")
 		List<String> getExcludeSources();
+		
+		@Option(description = "neo4j flag")
+		boolean getNeo4j();
 	}
 }
