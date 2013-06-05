@@ -13,6 +13,7 @@ import org.tno.networks.graph.AttributeHolder;
 import org.tno.networks.graph.Graph;
 import org.tno.networks.graph.Graph.Edge;
 import org.tno.networks.graph.Graph.Node;
+import org.tno.networks.graph.InMemoryGraph;
 
 public class NetworkIDMapper {
 	static {
@@ -35,8 +36,8 @@ public class NetworkIDMapper {
 		);
 	}
 	
-	public Graph mapIDs(Graph g) throws IDMapperException {
-		Graph gm = new Graph();
+	public InMemoryGraph mapIDs(InMemoryGraph g) throws IDMapperException {
+		InMemoryGraph gm = new InMemoryGraph();
 		copyAttributes(g, gm);
 		
 		Set<Node> tomap = new HashSet<Node>(g.getNodes());

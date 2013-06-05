@@ -47,10 +47,8 @@ public class Neo4jWriter {
 		Index<Node> propIndex = instance.index().forNodes("property");
 	
 		Map<String, Node> neonodes = new HashMap<String, Node>();
-		
-		
-		
-		for(Graph.Node n : graph.getNodes()){
+			
+		for(InMemoryGraph.Node n : graph.getNodes()){
 			Transaction tx = instance.beginTx();
 			try{
 
@@ -71,7 +69,7 @@ public class Neo4jWriter {
 			}
 		}
 			
-		for(Graph.Edge e : graph.getEdges()){
+		for(InMemoryGraph.Edge e : graph.getEdges()){
 			Transaction tx = instance.beginTx();
 			try{
 				Node nsrc = neonodes.get(e.getSrc().getId());
