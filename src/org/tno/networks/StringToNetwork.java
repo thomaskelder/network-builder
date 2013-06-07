@@ -34,6 +34,7 @@ import org.tno.networks.graph.Graph;
 import org.tno.networks.graph.Graph.Edge;
 import org.tno.networks.graph.Graph.Node;
 import org.tno.networks.graph.InMemoryGraph;
+import org.tno.networks.graph.Neo4jException;
 import org.tno.networks.graph.Neo4jWriter;
 import org.tno.networks.graph.XGMMLWriter;
 
@@ -192,13 +193,16 @@ public class StringToNetwork {
 				writeGml("" + pargs.getOut(), graph);
 			} else if(pargs.getOut().getName().endsWith(".gml")) {
 				writeXgmml("" + pargs.getOut(), graph);
+			} else if(!pargs.getNeo4jConfig().isEmpty()){
+				
+				writeNeo4j("" + pargs.getNeo4jConfig(), graph);
+				
 			} else {
-				if(pargs.getNeo4j()){
-					writeNeo4j("" + pargs.getOut(), graph);
-				} else {
+				
+				
 					writeGml(pargs.getOut() + ".gml", graph);
 					writeXgmml(pargs.getOut() + ".xgmml", graph);
-				}
+
 			}
 		} catch(Exception e) {
 			log.log(Level.SEVERE, "Fatal error", e);
@@ -276,17 +280,8 @@ public class StringToNetwork {
 		out.close();
 	}
 	
-	private static void writeNeo4j(String f, Graph g) {
-		
-		String location = f;
-		
-		boolean remote = false;
-		
-		if(location.startsWith("http")){
-			remote = true;
-			location = location.replace("http:/", "http://");
-		}
-		Neo4jWriter.write(g, location, remote);
+	private static void writeNeo4j(String f, Graph g) throws Neo4jException {
+		Neo4jWriter.write(g, f);
 	}
 	
 	private interface Args extends AIDMapper, AHelp {
@@ -308,7 +303,7 @@ public class StringToNetwork {
 		@Option(description = "Sources to exclude.")
 		List<String> getExcludeSources();
 		
-		@Option(description = "neo4j flag")
-		boolean getNeo4j();
+		@Option(description = "neo4j config")
+		String getNeo4jConfig();
 	}
 }

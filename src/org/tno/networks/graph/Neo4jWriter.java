@@ -15,50 +15,24 @@ import org.neo4j.rest.graphdb.RestGraphDatabase;
 
 public class Neo4jWriter {
 
-	private static void registerShutdownHook( final GraphDatabaseService graphDb )
-	{
-		// Registers a shutdown hook for the Neo4j instance so that it
-		// shuts down nicely when the VM exits (even if you "Ctrl-C" the
-		// running application).
-		Runtime.getRuntime().addShutdownHook( new Thread()
-		{
-			@Override
-			public void run()
-			{
-				graphDb.shutdown();
-			}
-		} );
-	}
-
 	// TODO how to deal with credentials?
-	public static void write(Graph graph, String location, boolean remote){
-
-		GraphDatabaseService instance = null;
-
-		if(remote){
-			instance = new RestGraphDatabase(location);
-		} else {
-			instance = new GraphDatabaseFactory().newEmbeddedDatabase(location);
-		}
+	public static void write(Graph graph, String config) throws Neo4jException{
 		
-		registerShutdownHook(instance);
+		Neo4jFactory factory = new Neo4jFactory(config);
 		
-		Index<Node> idIndex = instance.index().forNodes("id");
-		Index<Node> propIndex = instance.index().forNodes("property");
-	
+		GraphDatabaseService instance = factory.makeServiceInstance();
+		
 		Map<String, Node> neonodes = new HashMap<String, Node>();
 			
 		for(InMemoryGraph.Node n : graph.getNodes()){
 			Transaction tx = instance.beginTx();
 			try{
-
 				Node nn = instance.createNode();
 
 				nn.setProperty("id", n.getId());
-				idIndex.add(nn, "id", n.getId());
+				indexProperty("id", n.getId(), instance, factory, nn);
 				for(String key : n.getAttributeNames()){
-					// index them?
-					propIndex.add(nn, key, n.getAttribute(key));
+					indexProperty(key, n.getAttribute(key), instance, factory, nn);
 					nn.setProperty(key, n.getAttribute(key));
 				}
 
@@ -82,9 +56,11 @@ public class Neo4jWriter {
 				}
 				
 				Relationship rel = nsrc.createRelationshipTo(ntarget, DynamicRelationshipType.withName(relname));
-			
+				indexProperty("id", e.getId(), instance, factory, rel);
+				
 				for(String key : e.getAttributeNames()){
 					rel.setProperty(key, e.getAttribute(key));
+					indexProperty(key, e.getAttribute(key), instance, factory, rel);
 				}
 				tx.success();
 			} finally {
@@ -92,6 +68,16 @@ public class Neo4jWriter {
 			}
 		}
 
+	}
+
+	private static void indexProperty(String key, Object value,GraphDatabaseService instance, Neo4jFactory factory, Node n){
+		Index<Node> currentIndex = instance.index().forNodes(factory.lookupNodeIndexName(key));
+		currentIndex.add(n, factory.lookupNodeIndexKey(key), value);
+	}
+	
+	private static void indexProperty(String key, Object value,GraphDatabaseService instance, Neo4jFactory factory, Relationship r){
+		Index<Relationship> currentIndex = instance.index().forRelationships(factory.lookupEdgeIndexName(key));
+		currentIndex.add(r, factory.lookupEdgeIndexKey(key), value);
 	}
 
 }
