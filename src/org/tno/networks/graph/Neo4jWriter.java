@@ -8,9 +8,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.Index;
-import org.neo4j.rest.graphdb.RestGraphDatabase;
 
 
 public class Neo4jWriter {
@@ -21,6 +19,7 @@ public class Neo4jWriter {
 		Neo4jFactory factory = new Neo4jFactory(config);
 		
 		GraphDatabaseService instance = factory.makeServiceInstance();
+		Neo4jIndexer indexer = factory.makeIndexerInstance();
 		
 		Map<String, Node> neonodes = new HashMap<String, Node>();
 			
@@ -30,9 +29,9 @@ public class Neo4jWriter {
 				Node nn = instance.createNode();
 
 				nn.setProperty("id", n.getId());
-				indexProperty("id", n.getId(), instance, factory, nn);
+				indexProperty("id", n.getId(), instance, indexer, nn);
 				for(String key : n.getAttributeNames()){
-					indexProperty(key, n.getAttribute(key), instance, factory, nn);
+					indexProperty(key, n.getAttribute(key), instance, indexer, nn);
 					nn.setProperty(key, n.getAttribute(key));
 				}
 
@@ -56,11 +55,11 @@ public class Neo4jWriter {
 				}
 				
 				Relationship rel = nsrc.createRelationshipTo(ntarget, DynamicRelationshipType.withName(relname));
-				indexProperty("id", e.getId(), instance, factory, rel);
+				indexProperty("id", e.getId(), instance, indexer, rel);
 				
 				for(String key : e.getAttributeNames()){
 					rel.setProperty(key, e.getAttribute(key));
-					indexProperty(key, e.getAttribute(key), instance, factory, rel);
+					indexProperty(key, e.getAttribute(key), instance, indexer, rel);
 				}
 				tx.success();
 			} finally {
@@ -70,14 +69,14 @@ public class Neo4jWriter {
 
 	}
 
-	private static void indexProperty(String key, Object value,GraphDatabaseService instance, Neo4jFactory factory, Node n){
-		Index<Node> currentIndex = instance.index().forNodes(factory.lookupNodeIndexName(key));
-		currentIndex.add(n, factory.lookupNodeIndexKey(key), value);
+	private static void indexProperty(String key, Object value,GraphDatabaseService instance, Neo4jIndexer indexer, Node n){
+		Index<Node> currentIndex = instance.index().forNodes(indexer.lookupNodeIndexName(key));
+		currentIndex.add(n, indexer.lookupNodeIndexKey(key), value);
 	}
 	
-	private static void indexProperty(String key, Object value,GraphDatabaseService instance, Neo4jFactory factory, Relationship r){
-		Index<Relationship> currentIndex = instance.index().forRelationships(factory.lookupEdgeIndexName(key));
-		currentIndex.add(r, factory.lookupEdgeIndexKey(key), value);
+	private static void indexProperty(String key, Object value,GraphDatabaseService instance, Neo4jIndexer indexer, Relationship r){
+		Index<Relationship> currentIndex = instance.index().forRelationships(indexer.lookupEdgeIndexName(key));
+		currentIndex.add(r, indexer.lookupEdgeIndexKey(key), value);
 	}
 
 }

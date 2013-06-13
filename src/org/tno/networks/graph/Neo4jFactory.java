@@ -1,9 +1,7 @@
 package org.tno.networks.graph;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -39,22 +37,9 @@ public class Neo4jFactory {
 	private String serverConfigFile;
 	
 	private RelationshipType relationshipTypeAttribute;
-	
-	private String nodeDefaultIndex;
-	private String edgeDefaultIndex;
-	
-	private Map<String, String> nodeIndexNames = new HashMap<String,String>();
-	private Map<String, String> nodeIndexKeys = new HashMap<String, String>();
-	
-	private Map<String, String> edgeIndexNames = new HashMap<String,String>();
-	private Map<String, String> edgeIndexKeys = new HashMap<String, String>();
-	
-//	private int instanceCount = 0;
-//	private int maxInstances = 1;
-	
-//	private Set<GraphDatabaseService> instances;
-	
+		
 	private GraphDatabaseService instance = null;
+	private Neo4jIndexer indexer = null;
 
 	public Neo4jFactory(String configFile) throws Neo4jException {
 		SAXBuilder builder = new SAXBuilder();
@@ -77,8 +62,7 @@ public class Neo4jFactory {
 //			<max_instances>1</max_instances>
 			
 			Element indexing = root.getChild("indexing");
-			nodeDefaultIndex = indexing.getChildText("node_default_index");
-			edgeDefaultIndex = indexing.getChildText("edge_default_index");
+			indexer = new Neo4jIndexer(indexing.getChildText("node_default_index"),indexing.getChildText("edge_default_index"));
 			
 			List<Element> node_specific_indices = indexing.getChildren("node_specific_index");
 			
@@ -87,8 +71,7 @@ public class Neo4jFactory {
 				String indexName = specific_index.getChildText("index_name");
 				String indexKey = specific_index.getChildText("index_key");
 				
-				nodeIndexNames.put(propertyName, indexName);
-				nodeIndexKeys.put(propertyName, indexKey);
+				indexer.addNodePropertyMapping(propertyName, indexName, indexKey);
 			}
 			
 			List<Element> edge_specific_indices = indexing.getChildren("edge_specific_index");
@@ -98,8 +81,7 @@ public class Neo4jFactory {
 				String indexName = specific_index.getChildText("index_name");
 				String indexKey = specific_index.getChildText("index_key");
 				
-				edgeIndexNames.put(propertyName, indexName);
-				edgeIndexKeys.put(propertyName, indexKey);
+				indexer.addEdgePropertyMapping(propertyName, indexName, indexKey);
 			}
 			
 		} catch (JDOMException | IOException e) {
@@ -132,37 +114,18 @@ public class Neo4jFactory {
 		
 		return instance;
 	}
-
-	public String lookupNodeIndexName(String propertyName) {
-		if(nodeIndexNames.containsKey(propertyName)){
-			return nodeIndexNames.get(propertyName);
-		} else {
-			return nodeDefaultIndex;
-		}
-	}
 	
-	public String lookupNodeIndexKey(String propertyName) {
-		if(nodeIndexKeys.containsKey(propertyName)){
-			return nodeIndexKeys.get(propertyName);
-		} else {
-			return propertyName;
+	public Neo4jIndexer makeIndexerInstance() throws Neo4jException{
+		if(instance == null){
+			throw new Neo4jException("instance not ready");
 		}
-	}
-	
-	public String lookupEdgeIndexName(String propertyName) {
-		if(edgeIndexNames.containsKey(propertyName)){
-			return edgeIndexNames.get(propertyName);
-		} else {
-			return edgeDefaultIndex;
+		
+		if(indexer == null){
+			indexer = new Neo4jIndexer("property", "property");
 		}
-	}
-	
-	public String lookupEdgeIndexKey(String propertyName) {
-		if(edgeIndexKeys.containsKey(propertyName)){
-			return edgeIndexKeys.get(propertyName);
-		} else {
-			return propertyName;
-		}
+		
+		return indexer;
+			
 	}
 	
 	public RelationshipType getRelationshipType(){
