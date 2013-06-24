@@ -7,7 +7,7 @@ import org.tno.networks.graph.Graph.Edge;
 import org.tno.networks.graph.Graph.Node;
 
 public class GmlWriter {
-	public static void write(Graph graph, PrintWriter out) {
+	public static void write(InMemoryGraph graph, PrintWriter out) {
 		IndentPrintWriter iout = new IndentPrintWriter(out);
 		iout.setIndentString("\t");
 		int indent = 0;
