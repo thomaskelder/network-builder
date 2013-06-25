@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<neo4j_writer_config>
+	<config_name>example embedded config</config_name>
+	<db>
+		<type>embedded</type>
+		<location>./neo4j_db/</location>
+		<config_file></config_file>
+	</db>
+	<relationship_type_attribute>Interaction</relationship_type_attribute>
+	<indexing>
+		<node_default_index>property</node_default_index>
+		<edge_default_index>property</edge_default_index>
+		<node_specific_index>
+			<property_name>id</property_name>
+			<index_name>id</index_name>
+			<index_key>id</index_key>
+		</node_specific_index>
+		<edge_specific_index>
+			<property_name>id</property_name>
+			<index_name>id</index_name>
+			<index_key>id</index_key>
+		</edge_specific_index>
+	</indexing>
+</neo4j_writer_config>

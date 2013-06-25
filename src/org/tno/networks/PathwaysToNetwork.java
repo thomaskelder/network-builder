@@ -37,9 +37,10 @@ import org.tno.networks.args.DPathways;
 import org.tno.networks.graph.AttributeName;
 import org.tno.networks.graph.GmlWriter;
 import org.tno.networks.graph.Graph;
-import org.tno.networks.graph.XGMMLWriter;
 import org.tno.networks.graph.Graph.Edge;
 import org.tno.networks.graph.Graph.Node;
+import org.tno.networks.graph.InMemoryGraph;
+import org.tno.networks.graph.XGMMLWriter;
 
 import uk.co.flamingpenguin.jewel.cli.CliFactory;
 import uk.co.flamingpenguin.jewel.cli.Option;
@@ -73,10 +74,10 @@ public class PathwaysToNetwork {
 		this.homology = homology;
 	}
 	
-	Graph parseInteractions(Iterable<Pathway> pathways) throws IDMapperException {
+	InMemoryGraph parseInteractions(Iterable<Pathway> pathways) throws IDMapperException {
 		log.info("Parsing interactions");
 		log.fine("Ignoring interactions: " + ignoreInteractions);
-		Graph graph = new Graph();
+		InMemoryGraph graph = new InMemoryGraph();
 		graph.setDirected(true);
 		
 		for (Pathway p : pathways) {
@@ -406,13 +407,13 @@ public class PathwaysToNetwork {
 		return false;
 	}
 		
-	private static void writeGml(String f, Graph g) throws FileNotFoundException {
+	private static void writeGml(String f, InMemoryGraph g) throws FileNotFoundException {
 		PrintWriter out = new PrintWriter(new File(f));
 		GmlWriter.write(g, out);
 		out.close();
 	}
 	
-	private static void writeXgmml(String f, Graph g) throws IOException {
+	private static void writeXgmml(String f, InMemoryGraph g) throws IOException {
 		PrintWriter out = new PrintWriter(new File(f));
 		XGMMLWriter.write(g, out);
 		out.close();
@@ -431,7 +432,7 @@ public class PathwaysToNetwork {
 			if(pargs.isIgnoreInteraction()) ptn.setIgnoreInteractions(pargs.getIgnoreInteraction());
 			if(pargs.isHomology()) ptn.setHomology(
 					new HomologyMapper(dhom.getIDMapperHomology(), dhom.getIDMapperSource(), didm.getIDMapper()));
-			Graph g = ptn.parseInteractions(dpws.getIterable());
+			InMemoryGraph g = ptn.parseInteractions(dpws.getIterable());
 			
 			g.setTitle(pargs.isTitle() ? pargs.getTitle() : "untitled");
 			

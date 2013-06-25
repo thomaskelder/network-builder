@@ -13,7 +13,7 @@ import org.tno.networks.graph.Graph.Node;
 public class XGMMLWriter {
 	final static String NS = "http://www.cs.rpi.edu/XGMML";
 	
-	public static <N, E> void write(Graph graph, PrintWriter out) throws IOException {
+	public static <N, E> void write(InMemoryGraph graph, PrintWriter out) throws IOException {
 		Document doc = new Document();
 
 		Element root = new Element("graph", NS);

@@ -16,9 +16,9 @@ import org.tno.networks.args.AIDMapper;
 import org.tno.networks.args.DIDMapper;
 import org.tno.networks.graph.AttributeName;
 import org.tno.networks.graph.GmlWriter;
-import org.tno.networks.graph.Graph;
 import org.tno.networks.graph.Graph.Edge;
 import org.tno.networks.graph.Graph.Node;
+import org.tno.networks.graph.InMemoryGraph;
 import org.tno.networks.graph.XGMMLWriter;
 
 import uk.co.flamingpenguin.jewel.cli.CliFactory;
@@ -33,8 +33,8 @@ public class TFeToNetwork {
 
 	private static final String TFE_URL = "http://www.cisreg.ca/cgi-bin/tfe/api.pl?";
 	
-	public static Graph importTFe(String species) throws MalformedURLException, IOException {
-		Graph graph = new Graph();
+	public static InMemoryGraph importTFe(String species) throws MalformedURLException, IOException {
+		InMemoryGraph graph = new InMemoryGraph();
 		graph.setTitle("TFe");
 		graph.setDirected(true);
 		
@@ -117,7 +117,7 @@ public class TFeToNetwork {
 			Args pargs = CliFactory.parseArguments(Args.class, args);
 			DIDMapper didm = new DIDMapper(pargs);
 
-			Graph graph = importTFe(pargs.isSpecies() ? pargs.getSpecies() : null);
+			InMemoryGraph graph = importTFe(pargs.isSpecies() ? pargs.getSpecies() : null);
 			
 			//Translate ids if necessary
 			if(didm.getDataSources().length != 1 || !BioDataSource.ENTREZ_GENE.equals(didm.getDataSources()[0])) {
@@ -140,13 +140,13 @@ public class TFeToNetwork {
 
 	}
 
-	private static void writeGml(String f, Graph g) throws FileNotFoundException {
+	private static void writeGml(String f, InMemoryGraph g) throws FileNotFoundException {
 		PrintWriter out = new PrintWriter(new File(f));
 		GmlWriter.write(g, out);
 		out.close();
 	}
 	
-	private static void writeXgmml(String f, Graph g) throws IOException {
+	private static void writeXgmml(String f, InMemoryGraph g) throws IOException {
 		PrintWriter out = new PrintWriter(new File(f));
 		XGMMLWriter.write(g, out);
 		out.close();
