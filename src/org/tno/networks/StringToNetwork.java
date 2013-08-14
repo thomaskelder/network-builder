@@ -33,6 +33,9 @@ import org.tno.networks.graph.GmlWriter;
 import org.tno.networks.graph.Graph;
 import org.tno.networks.graph.Graph.Edge;
 import org.tno.networks.graph.Graph.Node;
+import org.tno.networks.graph.InMemoryGraph;
+import org.tno.networks.graph.Neo4jException;
+import org.tno.networks.graph.Neo4jWriter;
 import org.tno.networks.graph.XGMMLWriter;
 
 import uk.co.flamingpenguin.jewel.cli.CliFactory;
@@ -92,8 +95,8 @@ public class StringToNetwork {
 		excludeSources.addAll(exclude);
 	}
 	
-	public Graph readInteractions(File inFile) throws IDMapperException, IOException {
-		Graph graph = new Graph();
+	public InMemoryGraph readInteractions(File inFile) throws IDMapperException, IOException {
+		InMemoryGraph graph = new InMemoryGraph();
 		graph.setDirected(true);
 		graph.setTitle("STRING: " + inFile.getName());
 		
@@ -102,7 +105,9 @@ public class StringToNetwork {
 		//Read the STITCH interactions
 		BufferedReader in = new BufferedReader(new FileReader(inFile));
 		String line = in.readLine(); //Skip header
-		int srcNull = 0;
+		//int srcNull = 0;
+		
+		
 		while((line = in.readLine()) != null) {
 			String[] cols = line.split("\t", 8);
 			String a = cols[0];
@@ -169,13 +174,13 @@ public class StringToNetwork {
 			DIDMapper didm = new DIDMapper(pargs);
 			
 			Organism species = Organism.fromLatinName(pargs.getSpecies());
-
+			
 			//Create ensembl protein -> gene mappings
 			Map<String, String> protein2gene = new HashMap<String, String>();
 			for(File f : pargs.getEns()) protein2gene.putAll(readEnsemblMappings(f));
 			
 			StringToNetwork importer = new StringToNetwork(species, didm.getIDMapper(), protein2gene);
-			
+				
 			if(pargs.getExcludeSources() != null) {
 				importer.setExcludeSources(pargs.getExcludeSources());
 				log.info("Excluding sources: " + pargs.getExcludeSources());
@@ -183,15 +188,22 @@ public class StringToNetwork {
 			
 			importer.setMinScore(pargs.getMinScore());
 			importer.setTargetDs(didm.getDataSources());
-			Graph graph = importer.readInteractions(pargs.getIn());
+			InMemoryGraph graph = importer.readInteractions(pargs.getIn());
 			
 			if(pargs.getOut().getName().endsWith(".gml")) {
 				writeGml("" + pargs.getOut(), graph);
 			} else if(pargs.getOut().getName().endsWith(".gml")) {
 				writeXgmml("" + pargs.getOut(), graph);
+			} else if(!pargs.getNeo4jConfig().isEmpty()){
+				
+				writeNeo4j("" + pargs.getNeo4jConfig(), graph);
+				
 			} else {
-				writeGml(pargs.getOut() + ".gml", graph);
-				writeXgmml(pargs.getOut() + ".xgmml", graph);
+				
+				
+					writeGml(pargs.getOut() + ".gml", graph);
+					writeXgmml(pargs.getOut() + ".xgmml", graph);
+
 			}
 		} catch(Exception e) {
 			log.log(Level.SEVERE, "Fatal error", e);
@@ -257,16 +269,20 @@ public class StringToNetwork {
 	    return m.replaceAll("");
 	}
 	
-	private static void writeGml(String f, Graph g) throws FileNotFoundException {
+	private static void writeGml(String f, InMemoryGraph g) throws FileNotFoundException {
 		PrintWriter out = new PrintWriter(new File(f));
 		GmlWriter.write(g, out);
 		out.close();
 	}
 	
-	private static void writeXgmml(String f, Graph g) throws IOException {
+	private static void writeXgmml(String f, InMemoryGraph g) throws IOException {
 		PrintWriter out = new PrintWriter(new File(f));
 		XGMMLWriter.write(g, out);
 		out.close();
+	}
+	
+	private static void writeNeo4j(String f, Graph g) throws Neo4jException {
+		Neo4jWriter.write(g, f);
 	}
 	
 	private interface Args extends AIDMapper, AHelp {
@@ -287,5 +303,8 @@ public class StringToNetwork {
 		
 		@Option(description = "Sources to exclude.")
 		List<String> getExcludeSources();
+		
+		@Option(description = "neo4j config")
+		String getNeo4jConfig();
 	}
 }
