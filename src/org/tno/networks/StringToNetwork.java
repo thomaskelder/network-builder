@@ -52,6 +52,7 @@ public class StringToNetwork {
 		BioDataSource.init();
 		species2taxid.put(Organism.MusMusculus, "10090");
 		species2taxid.put(Organism.HomoSapiens, "9606");
+		species2taxid.put(Organism.RattusNorvegicus, "10116");
 	}
 	
 	int minScore;
