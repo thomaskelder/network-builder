@@ -304,7 +304,7 @@ public class StringToNetwork {
 		@Option(description = "Sources to exclude.")
 		List<String> getExcludeSources();
 		
-		@Option(description = "neo4j config")
+		@Option(description = "neo4j config", defaultValue = "")
 		String getNeo4jConfig();
 	}
 }

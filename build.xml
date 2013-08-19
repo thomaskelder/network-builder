@@ -27,8 +27,7 @@
                 <javac srcdir="${src.dir}"
                            includes="**"
                            destdir="${build.dir}"
-                           debug="true"
-                           source="1.5">
+                           debug="true">
                         <classpath refid="class.path"/>
                 </javac>
         </target>
