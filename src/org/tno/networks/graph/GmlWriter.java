@@ -57,6 +57,7 @@ public class GmlWriter {
 			if(!isNumber) {
 				String s = v.toString();
 				s = s.replaceAll("\"", "");
+				s = s.replaceAll("\\n", "");
 				v = '"' + s + '"';
 			}
 			out.println(k + "\t" + v);
