@@ -95,6 +95,14 @@ public class StringToNetwork {
 		excludeSources.addAll(exclude);
 	}
 	
+	private static String getFromArrayBounds(String[] array, int index, String empty) {
+		if(array.length < (index-1)) {
+			return array[index];
+		} else {
+			return empty;
+		}
+	}
+	
 	public InMemoryGraph readInteractions(File inFile) throws IDMapperException, IOException {
 		InMemoryGraph graph = new InMemoryGraph();
 		graph.setDirected(true);
@@ -119,8 +127,9 @@ public class StringToNetwork {
 			if(score < minScore) continue;
 			
 			Set<Xref> xas = getXref(a);
-			if(xas == null) continue;
 			Set<Xref> xbs = getXref(b);
+
+			if(xas == null) continue;
 			if(xbs == null) continue;
 			
 			//Add the interactions
@@ -130,9 +139,12 @@ public class StringToNetwork {
 					Node nb = graph.addNode("" + xb);
 					String type = cols[2];
 					//Source can be in col 6 or 7
-					String source = cols[7];
-					if(source == null || "".equals(source)) source = cols[6];
-					if(source == null || "".equals(source) || excludeSources.contains(source)) continue;
+					String source = getFromArrayBounds(cols, 7, null);
+					if(source == null || "".equals(source)) source = getFromArrayBounds(cols, 6, null);
+					if(excludeSources.contains(source)) {
+						log.info("Skipping interaction:\n" + line);
+						continue;
+					}
 					
 					List<Edge> addedEdges = new ArrayList<Edge>();
 					Set<Xref> endpoints = new HashSet<Xref>();
@@ -214,11 +226,13 @@ public class StringToNetwork {
 	Set<Xref> getXref(String id) throws IDMapperException {
 		//Find out if id is protein or metabolite
 		if(id.startsWith("CID")) {
+			//Remove CID1 (for "flat" compounds)
+			id = id.replace("CID1", "");
 			//Remove the CID part
 			id = id.replace("CID", "");
 			//Remove leading zeros
 			id = removeLeadingZeros(id);
-			Xref x = new Xref(id, BioDataSource.PUBCHEM);
+			Xref x = new Xref(id, BioDataSource.PUBCHEM_COMPOUND);
 			if(!x.getDataSource().equals(targetDs)) {
 				return idm.mapID(x, targetDs);
 			} else {

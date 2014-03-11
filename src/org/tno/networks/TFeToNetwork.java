@@ -88,6 +88,8 @@ public class TFeToNetwork {
 			for(String l : lines) {
 				if("".equals(l)) continue;
 				String[] cols = l.split("\t");
+				if(cols.length == 1) continue;
+				
 				for(int i = 0; i < cols.length; i++) cols[i] = cols[i].trim();
 				
 				Xref target = new Xref(cols[0], BioDataSource.ENTREZ_GENE);
