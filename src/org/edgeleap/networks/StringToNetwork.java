@@ -75,7 +75,7 @@ public class StringToNetwork {
 	public StringToNetwork(Organism org, IDMapper idm, Map<String, String> protein2gene) {
 		organism = org;
 		taxId = species2taxid.get(organism);
-		ensDs = BioDataSource.getSpeciesSpecificEnsembl(organism);
+		ensDs = BioDataSource.ENSEMBL;
 		targetDs = new DataSource[] { ensDs, BioDataSource.CHEBI };
 		
 		this.idm = idm;
@@ -93,6 +93,7 @@ public class StringToNetwork {
 	public void setExcludeSources(Collection<String> exclude) {
 		excludeSources.clear();
 		excludeSources.addAll(exclude);
+		excludeSources.remove("");
 	}
 	
 	private static String getFromArrayBounds(String[] array, int index, String empty) {
@@ -124,7 +125,9 @@ public class StringToNetwork {
 			
 			double score = Double.parseDouble(cols[5]);
 			
-			if(score < minScore) continue;
+			if(score < minScore) {
+				continue;
+			}
 			
 			Set<Xref> xas = getXref(a);
 			Set<Xref> xbs = getXref(b);
@@ -150,7 +153,6 @@ public class StringToNetwork {
 					Set<Xref> endpoints = new HashSet<Xref>();
 					endpoints.add(xa);
 					endpoints.add(xb);
-					
 					if(directed || xa.equals(xb)) {
 						Edge e = graph.addEdge(xa + "(" + type + "|" + source + ")" + xb, na, nb);
 						e.setAttribute(AttributeName.Directed.name(), "true");
@@ -315,7 +317,7 @@ public class StringToNetwork {
 		@Option(description = "The species to import (latin name, e.g. Mus musculus).")
 		String getSpecies();
 		
-		@Option(description = "Sources to exclude.")
+		@Option(defaultValue = "", description = "Sources to exclude.")
 		List<String> getExcludeSources();
 		
 		@Option(description = "neo4j config", defaultValue = "")
