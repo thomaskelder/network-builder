@@ -38,7 +38,7 @@ public class DIDMapper {
 		log.info("Connecting to idmappers");
 		if (aidm.isIdm()) {
 			IDMapperStack idms = new IDMapperStack();
-			idms.setTransitive(true);
+			idms.setTransitive(false);
 			for (String c : aidm.getIdm()) {
 				log.info("Connecting to " + c);
 				idms.addIDMapper(c);

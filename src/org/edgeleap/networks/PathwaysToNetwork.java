@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import org.bridgedb.DataSource;
 import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperException;
+import org.bridgedb.IDMapperStack;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.BioDataSource;
 import org.edgeleap.networks.args.AHelp;
