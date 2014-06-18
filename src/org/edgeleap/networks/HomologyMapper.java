@@ -1,4 +1,4 @@
-package org.tno.networks;
+package org.edgeleap.networks;
 
 import java.util.HashSet;
 import java.util.Set;

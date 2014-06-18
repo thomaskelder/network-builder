@@ -1,4 +1,4 @@
-package org.tno.networks;
+package org.edgeleap.networks;
 
 public enum InteractionType {
 	// PathwayCommons SIF mappings

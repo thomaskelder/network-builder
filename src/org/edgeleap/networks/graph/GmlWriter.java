@@ -1,10 +1,10 @@
-package org.tno.networks.graph;
+package org.edgeleap.networks.graph;
 
 import java.io.PrintWriter;
 
+import org.edgeleap.networks.graph.Graph.Edge;
+import org.edgeleap.networks.graph.Graph.Node;
 import org.freehep.util.io.IndentPrintWriter;
-import org.tno.networks.graph.Graph.Edge;
-import org.tno.networks.graph.Graph.Node;
 
 public class GmlWriter {
 	public static void write(InMemoryGraph graph, PrintWriter out) {

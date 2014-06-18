@@ -1,4 +1,4 @@
-package org.tno.networks;
+package org.edgeleap.networks;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,15 +11,15 @@ import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.BioDataSource;
-import org.tno.networks.args.AHelp;
-import org.tno.networks.args.AIDMapper;
-import org.tno.networks.args.DIDMapper;
-import org.tno.networks.graph.AttributeName;
-import org.tno.networks.graph.GmlWriter;
-import org.tno.networks.graph.Graph.Edge;
-import org.tno.networks.graph.Graph.Node;
-import org.tno.networks.graph.InMemoryGraph;
-import org.tno.networks.graph.XGMMLWriter;
+import org.edgeleap.networks.args.AHelp;
+import org.edgeleap.networks.args.AIDMapper;
+import org.edgeleap.networks.args.DIDMapper;
+import org.edgeleap.networks.graph.AttributeName;
+import org.edgeleap.networks.graph.GmlWriter;
+import org.edgeleap.networks.graph.Graph.Edge;
+import org.edgeleap.networks.graph.Graph.Node;
+import org.edgeleap.networks.graph.InMemoryGraph;
+import org.edgeleap.networks.graph.XGMMLWriter;
 
 import uk.co.flamingpenguin.jewel.cli.CliFactory;
 import uk.co.flamingpenguin.jewel.cli.Option;

@@ -1,4 +1,4 @@
-package org.tno.networks;
+package org.edgeleap.networks;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,11 +9,11 @@ import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.BioDataSource;
-import org.tno.networks.graph.AttributeHolder;
-import org.tno.networks.graph.Graph;
-import org.tno.networks.graph.Graph.Edge;
-import org.tno.networks.graph.Graph.Node;
-import org.tno.networks.graph.InMemoryGraph;
+import org.edgeleap.networks.graph.AttributeHolder;
+import org.edgeleap.networks.graph.Graph;
+import org.edgeleap.networks.graph.Graph.Edge;
+import org.edgeleap.networks.graph.Graph.Node;
+import org.edgeleap.networks.graph.InMemoryGraph;
 
 public class NetworkIDMapper {
 	static {

@@ -1,4 +1,4 @@
-package org.tno.networks.graph;
+package org.edgeleap.networks.graph;
 
 public enum AttributeName {
 	Interaction,

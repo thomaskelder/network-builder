@@ -1,14 +1,14 @@
-package org.tno.networks.graph;
+package org.edgeleap.networks.graph;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.edgeleap.networks.graph.Graph.Edge;
+import org.edgeleap.networks.graph.Graph.Node;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
-import org.tno.networks.graph.Graph.Edge;
-import org.tno.networks.graph.Graph.Node;
 
 public class XGMMLWriter {
 	final static String NS = "http://www.cs.rpi.edu/XGMML";

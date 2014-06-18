@@ -1,4 +1,4 @@
-package org.tno.networks.args;
+package org.edgeleap.networks.args;
 
 import uk.co.flamingpenguin.jewel.cli.Option;
 

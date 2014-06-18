@@ -1,4 +1,4 @@
-package org.tno.networks.args;
+package org.edgeleap.networks.args;
 
 import java.util.List;
 

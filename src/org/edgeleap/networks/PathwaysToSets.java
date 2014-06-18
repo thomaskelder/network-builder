@@ -1,4 +1,4 @@
-package org.tno.networks;
+package org.edgeleap.networks;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -14,14 +14,14 @@ import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.BioDataSource;
+import org.edgeleap.networks.args.AHelp;
+import org.edgeleap.networks.args.AIDMapper;
+import org.edgeleap.networks.args.APathways;
+import org.edgeleap.networks.args.DIDMapper;
+import org.edgeleap.networks.args.DPathways;
 import org.pathvisio.core.data.XrefWithSymbol;
 import org.pathvisio.core.util.PathwayParser;
 import org.pathvisio.core.util.PathwayParser.ParseException;
-import org.tno.networks.args.AHelp;
-import org.tno.networks.args.AIDMapper;
-import org.tno.networks.args.APathways;
-import org.tno.networks.args.DIDMapper;
-import org.tno.networks.args.DPathways;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
